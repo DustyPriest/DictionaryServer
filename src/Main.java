@@ -25,6 +25,11 @@ public class Main {
 
     public static void main(String[] args)
     {
+        // USAGE: java Main <port> <dictionary.json>
+        if (!checkArgs(args)) {
+            System.out.println("Usage: java Main <port> <dictionary.json>");
+            System.exit(0);
+        }
 
         ServerDictionary dictionary = new ServerDictionary("dictionary.json");
         ThreadPool threadPool = new ThreadPool(THREAD_COUNT);
@@ -49,10 +54,21 @@ public class Main {
         {
             e.printStackTrace();
         }
-
     }
 
+    private static boolean checkArgs(String[] args)
+    {
+        if (args.length != 2)
+        {
+            return false;
+        }
+        try {
+            port = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
 
-//    }
 
 }
