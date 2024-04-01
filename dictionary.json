@@ -1,0 +1,12 @@
+{
+  "hello" : [
+    "a greeting",
+    "commonly preceding 'world'",
+    "a way to say hi"
+  ],
+    "world" : [
+        "a planet",
+        "a place",
+        "a thing"
+    ]
+}
