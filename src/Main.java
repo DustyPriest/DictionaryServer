@@ -20,6 +20,7 @@ public class Main {
     private static int port = 3005;
 
     // Identifies the user number connected
+    // TODO: implement client counter properly
     private static int clientCounter = 0;
     private static final int THREAD_COUNT = 8;
 

@@ -17,30 +17,30 @@ public class ClientTask implements Runnable {
     public void run() {
         try {
 
-            // Input and Output streams; base input stream used to check for available bytes
+            // Get input/output streams for reading/writing data to/from the socket
+            // InputStream retained to check in.available() for incoming data
+            ObjectOutputStream msgOut = new ObjectOutputStream(socket.getOutputStream());
             InputStream in = socket.getInputStream();
             ObjectInputStream msgIn = new ObjectInputStream(in);
-            ObjectOutputStream msgOut = new ObjectOutputStream(socket.getOutputStream());
 
             try {
                 // TODO: send msg before timeout
                 socket.setSoTimeout(10000);
 
-                Message clientMsg = null;
+                NetworkMessage clientMsg = null;
 
                 while (true) {
-
-                    if (in.available() > 0) {
                         try {
-                            clientMsg = (Message) msgIn.readObject();
-                            System.out.println("Client: " + clientMsg.getStatus());
-                            msgOut.writeObject(handleMessage(clientMsg));
-                            msgOut.flush();
+                            if (in.available() > 0) {
+                                clientMsg = (NetworkMessage) msgIn.readObject();
+                                System.out.println("Client: " + clientMsg.getStatus());
+                                msgOut.writeObject(handleMessage(clientMsg));
+                                msgOut.flush();
+                            }
                         } catch (ClassNotFoundException e) {
                             System.out.println("bad data from client");
                             // TODO: fix stream when broken
                         }
-                    }
 
                 }
             } catch (SocketException e) {
@@ -48,25 +48,34 @@ public class ClientTask implements Runnable {
             }
             Main.decrementClientCounter();
 
+        } catch (SocketException e) {
+            System.out.println("client connection failed");
+            Main.decrementClientCounter();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
 
-    private Message handleMessage(Message msg) {
+    private NetworkMessage handleMessage(NetworkMessage msg) {
         Status status = msg.getStatus();
         switch(status) {
             case TASK_QUERY:
-                return new Message(Status.SUCCESS_WORD_FOUND, "word");
+                return dictionary.searchWord(msg.getData()[0].toUpperCase());
             case TASK_ADD:
-                return new Message(Status.SUCCESS_WORD_ADDED);
+                return new NetworkMessage(Status.SUCCESS_WORD_ADDED);
             case TASK_REMOVE:
-                return new Message(Status.SUCCESS_WORD_REMOVED);
+                return new NetworkMessage(Status.SUCCESS_WORD_REMOVED);
             case TASK_UPDATE:
-                return new Message(Status.SUCCESS_WORD_UPDATED);
+                return new NetworkMessage(Status.SUCCESS_WORD_UPDATED);
             default:
-                return new Message(Status.FAILURE_INVALID_INPUT);
+                return new NetworkMessage(Status.FAILURE_INVALID_INPUT);
         }
     }
 }

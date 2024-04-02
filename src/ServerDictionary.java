@@ -26,40 +26,40 @@ public class ServerDictionary {
         }
     }
 
-    public Message searchWord(String word) {
+    public NetworkMessage searchWord(String word) {
         if (dictionaryData.containsKey(word)) {
-            return new Message(Status.SUCCESS_WORD_FOUND, dictionaryData.get(word).toArray(new String[0]));
+            return new NetworkMessage(Status.SUCCESS_WORD_FOUND, dictionaryData.get(word).toArray(new String[0]));
         } else {
-            return new Message(Status.FAILURE_NOT_FOUND);
+            return new NetworkMessage(Status.FAILURE_NOT_FOUND);
         }
     }
 
-    public Message addWord(String word, String meaning) {
+    public NetworkMessage addWord(String word, String meaning) {
         if (!dictionaryData.containsKey(word)) {
             ArrayList<String> meanings = new ArrayList<>();
             meanings.add(meaning);
             dictionaryData.putIfAbsent(word,meanings);
-            return new Message(Status.SUCCESS_WORD_ADDED);
+            return new NetworkMessage(Status.SUCCESS_WORD_ADDED);
         } else {
-            return new Message(Status.FAILURE_WORD_EXISTS);
+            return new NetworkMessage(Status.FAILURE_WORD_EXISTS);
         }
     }
 
-    public Message removeWord(String word) {
+    public NetworkMessage removeWord(String word) {
         if (dictionaryData.containsKey(word)) {
             dictionaryData.remove(word);
-            return new Message(Status.SUCCESS_WORD_REMOVED);
+            return new NetworkMessage(Status.SUCCESS_WORD_REMOVED);
         } else {
-            return new Message(Status.FAILURE_NOT_FOUND);
+            return new NetworkMessage(Status.FAILURE_NOT_FOUND);
         }
     }
 
-    public Message updateWord(String word, String meaning) {
+    public NetworkMessage updateWord(String word, String meaning) {
         if (dictionaryData.containsKey(word)) {
             dictionaryData.get(word).add(meaning);
-            return new Message(Status.SUCCESS_WORD_UPDATED);
+            return new NetworkMessage(Status.SUCCESS_WORD_UPDATED);
         } else {
-            return new Message(Status.FAILURE_NOT_FOUND);
+            return new NetworkMessage(Status.FAILURE_NOT_FOUND);
         }
     }
 
