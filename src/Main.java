@@ -70,5 +70,9 @@ public class Main {
         return true;
     }
 
+    public static void decrementClientCounter() {
+        clientCounter--;
+    }
+
 
 }

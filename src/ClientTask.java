@@ -1,5 +1,8 @@
+
+
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientTask implements Runnable {
 
@@ -12,40 +15,38 @@ public class ClientTask implements Runnable {
     }
     @Override
     public void run() {
-
         try {
 
-            //Get the input/output streams for reading/writing data from/to the socket
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-            ObjectInputStream msgIn = new ObjectInputStream(socket.getInputStream());
+            // Input and Output streams; base input stream used to check for available bytes
+            InputStream in = socket.getInputStream();
+            ObjectInputStream msgIn = new ObjectInputStream(in);
             ObjectOutputStream msgOut = new ObjectOutputStream(socket.getOutputStream());
 
-            Message clientMsg = null;
+            try {
+                // TODO: send msg before timeout
+                socket.setSoTimeout(10000);
 
-            while (true) {
+                Message clientMsg = null;
 
-                try {
-                    clientMsg = (Message) msgIn.readObject();
-                } catch (ClassNotFoundException e) {
-                    // TODO: note bad message and reply as such
-                    e.printStackTrace();
+                while (true) {
+
+                    if (in.available() > 0) {
+                        try {
+                            clientMsg = (Message) msgIn.readObject();
+                            System.out.println("Client: " + clientMsg.getStatus());
+                            msgOut.writeObject(handleMessage(clientMsg));
+                            msgOut.flush();
+                        } catch (ClassNotFoundException e) {
+                            System.out.println("bad data from client");
+                            // TODO: fix stream when broken
+                        }
+                    }
+
                 }
-
-                if (clientMsg == null) {
-                    System.out.println("bad msg");
-                    continue;
-                    // TODO: note bad message and reply as such
-                }
-
-
-                Message response = handleMessage(clientMsg);
-                msgOut.writeObject(response);
-                msgOut.flush();
-
+            } catch (SocketException e) {
+                System.out.println("Client disconnected");
             }
-
+            Main.decrementClientCounter();
 
         } catch (IOException e) {
             e.printStackTrace();
