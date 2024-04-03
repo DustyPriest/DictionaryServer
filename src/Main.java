@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,7 +20,16 @@ public class Main {
 
         ServerGUI serverGUI = new ServerGUI(address, port);
 
-        ServerDictionary dictionary = new ServerDictionary(args[1], serverGUI);
+        ServerDictionary dictionary;
+        try {
+            dictionary = ServerDictionary.setInstance(args[1], serverGUI);
+        } catch (IllegalArgumentException | FileNotFoundException e) {
+            serverGUI.updateLog("FATAL: Invalid dictionary file, shutting down...");
+            e.printStackTrace();
+            serverGUI.showErrorPopup("Invalid dictionary file, program will exit");
+            System.exit(0);
+            return;
+        }
         ThreadPool threadPool = new ThreadPool(NUM_THREADS);
 
         try(ServerSocket serverSocket = new ServerSocket(port))
@@ -39,7 +49,6 @@ public class Main {
                     serverGUI.updateLog("WARN: All worker threads occupied, client in queue");
                 }
             }
-
         }
         catch (IOException e) {
             serverGUI.updateLog("FATAL: Server connection error, shutting down...");
