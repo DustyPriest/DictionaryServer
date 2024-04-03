@@ -6,12 +6,14 @@ import java.net.SocketException;
 
 public class ClientTask implements Runnable {
 
-    private Socket socket;
-    private ServerDictionary dictionary;
+    private final Socket socket;
+    private final ServerDictionary dictionary;
+    private final SimpleLogger log;
 
-    public ClientTask(Socket socket, ServerDictionary dictionary) {
+    public ClientTask(Socket socket, ServerDictionary dictionary, SimpleLogger log) {
         this.socket = socket;
         this.dictionary = dictionary;
+        this.log = log;
     }
     @Override
     public void run() {
@@ -22,8 +24,6 @@ public class ClientTask implements Runnable {
             ObjectInputStream msgIn = new ObjectInputStream(socket.getInputStream());
 
             try {
-                // TODO: send msg before timeout
-                socket.setSoTimeout(10000);
                 NetworkMessage clientMsg;
 
                 while (true) {
@@ -54,6 +54,7 @@ public class ClientTask implements Runnable {
 
     }
 
+    // Action client requests
     private NetworkMessage handleMessage(NetworkMessage msg) {
         Status status = msg.getStatus();
         return switch (status) {

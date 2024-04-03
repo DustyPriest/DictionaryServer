@@ -32,6 +32,8 @@ public class Main {
             System.exit(0);
         }
 
+        ServerGUI serverGUI = new ServerGUI();
+
         ServerDictionary dictionary = new ServerDictionary("dictionary.json");
         ThreadPool threadPool = new ThreadPool(THREAD_COUNT);
 
@@ -47,7 +49,7 @@ public class Main {
                 System.out.println("Client "+ clientCounter +": Applying for connection!");
 
                 // add connection to task list
-                threadPool.addTask(new ClientTask(clientSocket, dictionary));
+                threadPool.addTask(new ClientTask(clientSocket, dictionary, serverGUI));
             }
 
         }
