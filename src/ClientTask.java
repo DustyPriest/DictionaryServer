@@ -65,17 +65,12 @@ public class ClientTask implements Runnable {
 
     private NetworkMessage handleMessage(NetworkMessage msg) {
         Status status = msg.getStatus();
-        switch(status) {
-            case TASK_QUERY:
-                return dictionary.searchWord(msg.getData()[0].toUpperCase());
-            case TASK_ADD:
-                return new NetworkMessage(Status.SUCCESS_WORD_ADDED);
-            case TASK_REMOVE:
-                return new NetworkMessage(Status.SUCCESS_WORD_REMOVED);
-            case TASK_UPDATE:
-                return new NetworkMessage(Status.SUCCESS_WORD_UPDATED);
-            default:
-                return new NetworkMessage(Status.FAILURE_INVALID_INPUT);
-        }
+        return switch (status) {
+            case TASK_QUERY -> dictionary.searchWord(msg.getData()[0]);
+            case TASK_ADD -> dictionary.addWord(msg.getData()[0], msg.getData()[1]);
+            case TASK_REMOVE -> dictionary.removeWord(msg.getData()[0]);
+            case TASK_UPDATE -> dictionary.updateWord(msg.getData()[0], msg.getData()[1]);
+            default -> new NetworkMessage(Status.FAILURE_INVALID_INPUT);
+        };
     }
 }

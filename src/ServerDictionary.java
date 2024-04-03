@@ -27,27 +27,30 @@ public class ServerDictionary {
     }
 
     public NetworkMessage searchWord(String word) {
-        if (dictionaryData.containsKey(word)) {
-            return new NetworkMessage(Status.SUCCESS_WORD_FOUND, dictionaryData.get(word).toArray(new String[0]));
+        String wordUpper = word.toUpperCase();
+        if (dictionaryData.containsKey(wordUpper)) {
+            return new NetworkMessage(Status.SUCCESS_WORD_FOUND, dictionaryData.get(wordUpper).toArray(new String[0]));
         } else {
             return new NetworkMessage(Status.FAILURE_NOT_FOUND);
         }
     }
 
     public NetworkMessage addWord(String word, String meaning) {
-        if (!dictionaryData.containsKey(word)) {
+        String wordUpper = word.toUpperCase();
+        if (!dictionaryData.containsKey(wordUpper)) {
             ArrayList<String> meanings = new ArrayList<>();
             meanings.add(meaning);
-            dictionaryData.putIfAbsent(word,meanings);
-            return new NetworkMessage(Status.SUCCESS_WORD_ADDED);
+            dictionaryData.putIfAbsent(wordUpper,meanings);
+            return new NetworkMessage(Status.SUCCESS_WORD_ADDED, meanings.toArray(new String[0]));
         } else {
             return new NetworkMessage(Status.FAILURE_WORD_EXISTS);
         }
     }
 
     public NetworkMessage removeWord(String word) {
-        if (dictionaryData.containsKey(word)) {
-            dictionaryData.remove(word);
+        String wordUpper = word.toUpperCase();
+        if (dictionaryData.containsKey(wordUpper)) {
+            dictionaryData.remove(wordUpper);
             return new NetworkMessage(Status.SUCCESS_WORD_REMOVED);
         } else {
             return new NetworkMessage(Status.FAILURE_NOT_FOUND);
@@ -55,9 +58,10 @@ public class ServerDictionary {
     }
 
     public NetworkMessage updateWord(String word, String meaning) {
-        if (dictionaryData.containsKey(word)) {
-            dictionaryData.get(word).add(meaning);
-            return new NetworkMessage(Status.SUCCESS_WORD_UPDATED);
+        String wordUpper = word.toUpperCase();
+        if (dictionaryData.containsKey(wordUpper)) {
+            dictionaryData.get(wordUpper).add(meaning);
+            return new NetworkMessage(Status.SUCCESS_WORD_UPDATED, dictionaryData.get(wordUpper).toArray(new String[0]));
         } else {
             return new NetworkMessage(Status.FAILURE_NOT_FOUND);
         }
