@@ -29,23 +29,23 @@ public class ClientTask implements Runnable {
                 while (true) {
                         try {
                             clientMsg = (NetworkMessage) msgIn.readObject();
-                            System.out.println("Client: " + clientMsg.getStatus());
                             msgOut.writeObject(handleMessage(clientMsg));
                             msgOut.flush();
                         } catch (ClassNotFoundException e) {
-                            System.out.println("bad data from client");
-                            // TODO: fix stream when broken
+                            // stream damaged from bad data, disconnect client
+                            log.updateLog("ERROR: Bad data from client, dropping connection");
+                            break;
                         }
                 }
             } catch (SocketException e) {
-                // TODO: add to server log
-                System.out.println("Client disconnected");
+                log.updateLog("INFO: Client disconnected");
             }
-            Main.decrementClientCounter();
         } catch (IOException e) {
+            log.updateLog("ERROR: Client connection error");
             e.printStackTrace();
         } finally {
             try {
+                log.decrementClientCounter();
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -57,12 +57,22 @@ public class ClientTask implements Runnable {
     // Action client requests
     private NetworkMessage handleMessage(NetworkMessage msg) {
         Status status = msg.getStatus();
-        return switch (status) {
-            case TASK_QUERY -> dictionary.searchWord(msg.getData()[0]);
-            case TASK_ADD -> dictionary.addWord(msg.getData()[0], msg.getData()[1]);
-            case TASK_REMOVE -> dictionary.removeWord(msg.getData()[0]);
-            case TASK_UPDATE -> dictionary.updateWord(msg.getData()[0], msg.getData()[1]);
-            default -> new NetworkMessage(Status.FAILURE_INVALID_INPUT);
-        };
+        switch (status) {
+            case TASK_QUERY:
+                log.updateLog("INFO: Client request - query word '" + msg.getData()[0].toUpperCase() + "'");
+                return dictionary.searchWord(msg.getData()[0]);
+            case TASK_ADD:
+                log.updateLog("INFO: Client request - add word '" + msg.getData()[0].toUpperCase() + "'");
+                return dictionary.addWord(msg.getData()[0], msg.getData()[1]);
+            case TASK_REMOVE:
+                log.updateLog("INFO: Client request - remove word '" + msg.getData()[0].toUpperCase() + "'");
+                return dictionary.removeWord(msg.getData()[0]);
+            case TASK_UPDATE:
+                log.updateLog("INFO: Client request - update word '" + msg.getData()[0].toUpperCase() + "'");
+                return dictionary.updateWord(msg.getData()[0], msg.getData()[1]);
+            default:
+                log.updateLog("WARN: Invalid client request");
+                return new NetworkMessage(Status.FAILURE_INVALID_INPUT);
+        }
     }
 }

@@ -141,7 +141,7 @@
             <properties>
               <columns value="2"/>
               <editable value="false"/>
-              <enabled value="false"/>
+              <enabled value="true"/>
               <lineWrap value="true"/>
               <rows value="0"/>
             </properties>

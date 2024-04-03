@@ -12,8 +12,11 @@ public class ServerGUI implements SimpleLogger {
     private JLabel numClientsLabel;
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private int clientCounter = 0;
 
-    public ServerGUI() {
+    public ServerGUI(String address, int port) {
+        addressField.setText(address);
+        portField.setText(String.valueOf(port));
 
         clearButton.addActionListener(e -> logArea.setText(""));
 
@@ -27,5 +30,23 @@ public class ServerGUI implements SimpleLogger {
 
     public void updateLog(String message) {
         logArea.append("[" + dateFormat.format(new Date()) + "] " + message + "\n");
+    }
+
+    public void incrementClientCounter() {
+        clientCounter++;
+        numClientsLabel.setText(String.valueOf(clientCounter));
+    }
+
+    public void decrementClientCounter() {
+        clientCounter--;
+        numClientsLabel.setText(String.valueOf(clientCounter));
+    }
+
+    public int getClientCount() {
+        return clientCounter;
+    }
+
+    public void showErrorPopup(String message) {
+        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }

@@ -1,28 +1,13 @@
-
-import com.google.gson.Gson;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.net.ServerSocketFactory;
 
 public class Main {
 
     // Declare the port number
-    private static int port = 3005;
-
-    // Identifies the user number connected
-    // TODO: implement client counter properly
-    private static int clientCounter = 0;
-    private static final int THREAD_COUNT = 8;
+    private static int port;
+    private static final String address = "localhost";
+    private static final int NUM_THREADS = 8;
 
     public static void main(String[] args)
     {
@@ -31,31 +16,42 @@ public class Main {
             System.out.println("Usage: java Main <port> <dictionary.json>");
             System.exit(0);
         }
+        port = Integer.parseInt(args[0]);
 
-        ServerGUI serverGUI = new ServerGUI();
+        ServerGUI serverGUI = new ServerGUI(address, port);
 
-        ServerDictionary dictionary = new ServerDictionary("dictionary.json");
-        ThreadPool threadPool = new ThreadPool(THREAD_COUNT);
+        ServerDictionary dictionary = new ServerDictionary("dictionary.json", serverGUI);
+        ThreadPool threadPool = new ThreadPool(NUM_THREADS);
 
         try(ServerSocket serverSocket = new ServerSocket(port))
         {
-            System.out.println("Waiting for client connection...");
+            serverGUI.updateLog("INFO: Server started on port "+port);
 
             // Wait for connections.
             while(true)
             {
                 Socket clientSocket = serverSocket.accept();
-                clientCounter++;
-                System.out.println("Client "+ clientCounter +": Applying for connection!");
+                serverGUI.incrementClientCounter();
+                serverGUI.updateLog("INFO: Client "+ serverGUI.getClientCount() +" applying for connection!");
 
                 // add connection to task list
                 threadPool.addTask(new ClientTask(clientSocket, dictionary, serverGUI));
+                if (serverGUI.getClientCount() > NUM_THREADS) {
+                    serverGUI.updateLog("WARN: All worker threads occupied, client in queue");
+                }
             }
 
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
+            serverGUI.updateLog("FATAL: Server connection error, shutting down...");
             e.printStackTrace();
+            serverGUI.showErrorPopup("Server connection error, program will exit");
+            System.exit(0);
+        } catch (IllegalArgumentException e) {
+            serverGUI.updateLog("FATAL: Invalid port number, shutting down...");
+            e.printStackTrace();
+            serverGUI.showErrorPopup("Invalid port number, program will exit");
+            System.exit(0);
         }
     }
 
@@ -71,10 +67,6 @@ public class Main {
             return false;
         }
         return true;
-    }
-
-    public static void decrementClientCounter() {
-        clientCounter--;
     }
 
 
