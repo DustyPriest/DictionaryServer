@@ -11,16 +11,15 @@ public class Main {
 
     public static void main(String[] args)
     {
-        // USAGE: java Main <port> <dictionary.json>
+        // USAGE: java -jar DictionaryServer.jar <port> <dictionary.json>
         if (!checkArgs(args)) {
-            System.out.println("Usage: java Main <port> <dictionary.json>");
+            System.out.println("Usage: java -jar DictionaryServer.jar <port> <dictionary.json>");
             System.exit(0);
         }
-        port = Integer.parseInt(args[0]);
 
         ServerGUI serverGUI = new ServerGUI(address, port);
 
-        ServerDictionary dictionary = new ServerDictionary("dictionary.json", serverGUI);
+        ServerDictionary dictionary = new ServerDictionary(args[1], serverGUI);
         ThreadPool threadPool = new ThreadPool(NUM_THREADS);
 
         try(ServerSocket serverSocket = new ServerSocket(port))
@@ -55,10 +54,8 @@ public class Main {
         }
     }
 
-    private static boolean checkArgs(String[] args)
-    {
-        if (args.length != 2)
-        {
+    private static boolean checkArgs(String[] args) {
+        if (args.length != 2) {
             return false;
         }
         try {
