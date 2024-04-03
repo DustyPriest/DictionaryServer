@@ -18,38 +18,29 @@ public class ClientTask implements Runnable {
         try {
 
             // Get input/output streams for reading/writing data to/from the socket
-            // InputStream retained to check in.available() for incoming data
             ObjectOutputStream msgOut = new ObjectOutputStream(socket.getOutputStream());
-            InputStream in = socket.getInputStream();
-            ObjectInputStream msgIn = new ObjectInputStream(in);
+            ObjectInputStream msgIn = new ObjectInputStream(socket.getInputStream());
 
             try {
                 // TODO: send msg before timeout
                 socket.setSoTimeout(10000);
-
-                NetworkMessage clientMsg = null;
+                NetworkMessage clientMsg;
 
                 while (true) {
                         try {
-                            if (in.available() > 0) {
-                                clientMsg = (NetworkMessage) msgIn.readObject();
-                                System.out.println("Client: " + clientMsg.getStatus());
-                                msgOut.writeObject(handleMessage(clientMsg));
-                                msgOut.flush();
-                            }
+                            clientMsg = (NetworkMessage) msgIn.readObject();
+                            System.out.println("Client: " + clientMsg.getStatus());
+                            msgOut.writeObject(handleMessage(clientMsg));
+                            msgOut.flush();
                         } catch (ClassNotFoundException e) {
                             System.out.println("bad data from client");
                             // TODO: fix stream when broken
                         }
-
                 }
             } catch (SocketException e) {
+                // TODO: add to server log
                 System.out.println("Client disconnected");
             }
-            Main.decrementClientCounter();
-
-        } catch (SocketException e) {
-            System.out.println("client connection failed");
             Main.decrementClientCounter();
         } catch (IOException e) {
             e.printStackTrace();
