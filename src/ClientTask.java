@@ -40,8 +40,10 @@ public class ClientTask implements Runnable {
             } catch (SocketException e) {
                 log.updateLog("INFO: Client disconnected");
             }
+        } catch (EOFException e) {
+            log.updateLog("INFO: Client cancelled connection");
         } catch (IOException e) {
-            log.updateLog("ERROR: Client connection error");
+            log.updateLog("ERROR: Client " + e.getMessage());
             e.printStackTrace();
         } finally {
             try {

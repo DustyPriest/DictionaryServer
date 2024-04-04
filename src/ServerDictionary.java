@@ -23,6 +23,11 @@ public class ServerDictionary {
         Gson gson = new Gson();
         log.updateLog("INFO: Loading dictionary from file...");
         this.dictionaryData = gson.fromJson(new FileReader(filePath), ConcurrentHashMap.class);
+        if (dictionaryData == null) {
+            dictionaryData = new ConcurrentHashMap<>();
+        } else {
+            dictionaryToUpper();
+        }
         log.updateLog("INFO: Dictionary loaded from file '" + filePath + "'");
 
     }
@@ -116,6 +121,14 @@ public class ServerDictionary {
 
     public int getChangeCounter() {
         return changeCounter;
+    }
+
+    private void dictionaryToUpper() {
+        ConcurrentHashMap<String, ArrayList<String>> newDictionary = new ConcurrentHashMap<>();
+        for (Map.Entry<String, ArrayList<String>> entry : dictionaryData.entrySet()) {
+            newDictionary.put(entry.getKey().toUpperCase(), entry.getValue());
+        }
+        dictionaryData = newDictionary;
     }
 
 }

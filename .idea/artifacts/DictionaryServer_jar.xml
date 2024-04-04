@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="DictionaryServer:jar">
+  <artifact type="jar" name="DictionaryServer:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/DictionaryServer_jar</output-path>
     <root id="archive" name="DictionaryServer.jar">
       <element id="module-output" name="DictionaryServer" />

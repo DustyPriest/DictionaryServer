@@ -8,7 +8,7 @@ public class Main {
     // Declare the port number
     private static int port;
     private static final String address = "localhost";
-    private static final int NUM_THREADS = 8;
+    private static final int NUM_THREADS = 1;
 
     public static void main(String[] args)
     {

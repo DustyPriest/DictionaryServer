@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ServerGUI implements SimpleLogger {
+    private String address;
+    private int port;
     private JTextField addressField;
     private JTextField portField;
     private JTextArea logArea;
@@ -18,8 +20,9 @@ public class ServerGUI implements SimpleLogger {
     private int clientCounter = 0;
 
     public ServerGUI(String address, int port) {
-        addressField.setText(address);
-        portField.setText(String.valueOf(port));
+        this.address = address;
+        this.port = port;
+        updateTextFields();
 
         WindowListener closeListener = new WindowAdapter() {
             @Override
@@ -37,6 +40,8 @@ public class ServerGUI implements SimpleLogger {
         JFrame frame = new JFrame("Dictionary Server");
         frame.setContentPane(rootPanel);
         frame.setMinimumSize(new Dimension(800, 500));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setBounds((int) screenSize.getWidth() / 2 - 400, (int) screenSize.getHeight() / 2 - 250, 800, 500);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(closeListener);
         frame.pack();
@@ -49,12 +54,12 @@ public class ServerGUI implements SimpleLogger {
 
     public void incrementClientCounter() {
         clientCounter++;
-        numClientsLabel.setText(String.valueOf(clientCounter));
+        updateTextFields();
     }
 
     public void decrementClientCounter() {
         clientCounter--;
-        numClientsLabel.setText(String.valueOf(clientCounter));
+        updateTextFields();
     }
 
     public int getClientCount() {
@@ -63,5 +68,11 @@ public class ServerGUI implements SimpleLogger {
 
     public void showErrorPopup(String message) {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void updateTextFields() {
+        numClientsLabel.setText(String.valueOf(clientCounter));
+        addressField.setText(address);
+        portField.setText(String.valueOf(port));
     }
 }

@@ -50,7 +50,7 @@
           <editable value="false"/>
           <enabled value="false"/>
           <font style="3"/>
-          <text value="localhost"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="f9a43" class="javax.swing.JLabel">
@@ -74,7 +74,7 @@
           <editable value="false"/>
           <enabled value="false"/>
           <font style="3"/>
-          <text value="3005"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="64511" class="javax.swing.JLabel">
