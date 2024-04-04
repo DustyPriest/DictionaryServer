@@ -7,21 +7,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ServerGUI implements SimpleLogger {
-    private String address;
-    private int port;
-    private JTextField addressField;
-    private JTextField portField;
+
     private JTextArea logArea;
     private JButton clearButton;
     private JPanel rootPanel;
     private JLabel numClientsLabel;
+    private JLabel addressLabel;
+    private JLabel portLabel;
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private int clientCounter = 0;
 
     public ServerGUI(String address, int port) {
-        this.address = address;
-        this.port = port;
+        addressLabel.setText(address);
+        portLabel.setText(String.valueOf(port));
         updateTextFields();
 
         WindowListener closeListener = new WindowAdapter() {
@@ -54,12 +53,12 @@ public class ServerGUI implements SimpleLogger {
 
     public void incrementClientCounter() {
         clientCounter++;
-        updateTextFields();
+        numClientsLabel.setText(String.valueOf(clientCounter));
     }
 
     public void decrementClientCounter() {
         clientCounter--;
-        updateTextFields();
+        numClientsLabel.setText(String.valueOf(clientCounter));
     }
 
     public int getClientCount() {
@@ -68,11 +67,5 @@ public class ServerGUI implements SimpleLogger {
 
     public void showErrorPopup(String message) {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-    }
-
-    private void updateTextFields() {
-        numClientsLabel.setText(String.valueOf(clientCounter));
-        addressField.setText(address);
-        portField.setText(String.valueOf(port));
     }
 }

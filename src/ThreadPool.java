@@ -6,7 +6,7 @@ public class ThreadPool {
     private LinkedBlockingDeque<Runnable> taskQueue;
 
     public ThreadPool(int numThreads) {
-        this.taskQueue = new LinkedBlockingDeque<>(numThreads);
+        this.taskQueue = new LinkedBlockingDeque<>();
         this.workerThreads = new WorkerThread[numThreads];
 
         for (int i = 0; i < numThreads; i++) {

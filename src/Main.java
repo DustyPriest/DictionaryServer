@@ -1,5 +1,7 @@
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -8,7 +10,7 @@ public class Main {
     // Declare the port number
     private static int port;
     private static final String address = "localhost";
-    private static final int NUM_THREADS = 6;
+    private static final int NUM_THREADS = 8;
 
     public static void main(String[] args)
     {
