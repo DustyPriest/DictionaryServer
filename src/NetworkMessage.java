@@ -1,3 +1,6 @@
+// NetworkMessage
+// Serializable class for passing messages b/n client & server
+
 import java.io.Serial;
 import java.io.Serializable;
 

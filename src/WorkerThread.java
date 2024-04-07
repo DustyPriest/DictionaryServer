@@ -1,8 +1,11 @@
+// WorkerThread
+// Worker thread implementation for ThreadPool
+
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class WorkerThread extends Thread {
 
-    private LinkedBlockingDeque<Runnable> taskQueue;
+    private final LinkedBlockingDeque<Runnable> taskQueue;
 
     public WorkerThread(LinkedBlockingDeque<Runnable> taskQueue) {
         this.taskQueue = taskQueue;

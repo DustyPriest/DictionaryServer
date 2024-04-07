@@ -1,3 +1,7 @@
+// Status
+// Enum for consistent message statuses b/n client & server
+// Field of NetworkMessage
+
 public enum Status {
     FAILURE_NOT_FOUND("Word not found in dictionary"),
     FAILURE_WORD_EXISTS("Word already exists in dictionary"),

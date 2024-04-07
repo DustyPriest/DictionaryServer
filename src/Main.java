@@ -1,7 +1,9 @@
+// Main
+// Entry point for dictionary server
+// Author: Hugo Akindele-Obe
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -15,13 +17,14 @@ public class Main {
     public static void main(String[] args)
     {
         // USAGE: java -jar DictionaryServer.jar <port> <dictionary.json>
-        if (!checkArgs(args)) {
+        if (!parseArgs(args)) {
             System.out.println("Usage: java -jar DictionaryServer.jar <port> <dictionary.json>");
             System.exit(0);
         }
 
         ServerGUI serverGUI = new ServerGUI(address, port);
 
+        // load dictionary file to memory
         ServerDictionary dictionary;
         try {
             dictionary = ServerDictionary.setInstance(args[1], serverGUI);
@@ -32,6 +35,8 @@ public class Main {
             System.exit(0);
             return;
         }
+
+        // create worker threads; allocated per client connection
         ThreadPool threadPool = new ThreadPool(NUM_THREADS);
 
         try(ServerSocket serverSocket = new ServerSocket(port))
@@ -65,7 +70,8 @@ public class Main {
         }
     }
 
-    private static boolean checkArgs(String[] args) {
+    // checks cmd line arguments match the requirements & assigns the port
+    private static boolean parseArgs(String[] args) {
         if (args.length != 2) {
             return false;
         }

@@ -1,3 +1,6 @@
+// ServerGUI
+// Simple server GUI displaying log of client requests and server responses
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -21,7 +24,6 @@ public class ServerGUI implements SimpleLogger {
     public ServerGUI(String address, int port) {
         addressLabel.setText(address);
         portLabel.setText(String.valueOf(port));
-        updateTextFields();
 
         WindowListener closeListener = new WindowAdapter() {
             @Override

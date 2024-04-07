@@ -1,4 +1,5 @@
-
+// ClientTas
+// Thread runnable - runs for the duration of a client connection
 
 import java.io.*;
 import java.net.Socket;

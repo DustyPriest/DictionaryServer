@@ -1,5 +1,7 @@
-import com.google.gson.Gson;
+// ServerDictionary
+// Loads dictionary from JSON & maintains dictionary data in thread safe memory
 
+import com.google.gson.Gson;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
