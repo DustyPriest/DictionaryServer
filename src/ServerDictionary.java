@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServerDictionary {
 
     private static ServerDictionary instance;
-    private String filePath;
+    private final String filePath;
     private Map<String, ArrayList<String>> dictionaryData;
     private final SimpleLogger log;
     private int changeCounter = 0;
@@ -91,7 +91,7 @@ public class ServerDictionary {
 
     public NetworkMessage updateWord(String word, String meaning) {
         String wordUpper = word.toUpperCase();
-        if (dictionaryData.containsKey(wordUpper)) {
+        if (dictionaryData.containsKey(wordUpper) && !meaningExists(wordUpper, meaning)) {
             dictionaryData.get(wordUpper).add(meaning);
             log.updateLog("INFO: Definitions added for word '" + wordUpper + "'");
             incrementChangeCounter();
@@ -100,6 +100,15 @@ public class ServerDictionary {
             log.updateLog("INFO: Word not found '" + wordUpper + "'");
             return new NetworkMessage(Status.FAILURE_NOT_FOUND);
         }
+    }
+
+    private boolean meaningExists(String wordUpper, String meaning) {
+        for (String def : dictionaryData.get(wordUpper)) {
+            if (def.equalsIgnoreCase(meaning)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void saveDictionaryToFile() {
