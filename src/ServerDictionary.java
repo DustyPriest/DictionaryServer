@@ -96,6 +96,9 @@ public class ServerDictionary {
             log.updateLog("INFO: Definitions added for word '" + wordUpper + "'");
             incrementChangeCounter();
             return new NetworkMessage(Status.SUCCESS_WORD_UPDATED, dictionaryData.get(wordUpper).toArray(new String[0]));
+        } else if (!meaningExists(wordUpper, meaning)) {
+            log.updateLog("INFO: Definition already exists for '" + wordUpper + "'");
+            return new NetworkMessage(Status.FAILURE_DEFINITION_EXISTS);
         } else {
             log.updateLog("INFO: Word not found '" + wordUpper + "'");
             return new NetworkMessage(Status.FAILURE_NOT_FOUND);
